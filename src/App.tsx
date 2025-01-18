@@ -1,58 +1,56 @@
-import { useState } from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import SearchAppBar from './Components/TopBar/TopBar';
+import UserForm from './Components/UserForm/UserForm';
+import Tabs from './Components/Tabs/Tabs';
+import FetchData from './Components/Clients/Clients';
+
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [token, setToken] = useState('');
+  const [account, setAccount] = useState('' as string | null);
+  const [userFilter, setUserFilter] = useState('');
+  const [reload, setReload] = useState(false);
+  const [income, setIncome] = useState<ItemDetail[]>([]);
+  const [debt, setDebt] = useState<ItemDetail[]>([]);
+  const [expenses, setExpenses] = useState<ItemDetail[]>([]);
+  const [groupDetails, setGroupDetails] = useState<{ concept: string; detail: string }[]>([]);
+
+  useEffect(() => {
+    if (reload) {
+      FetchData({ token, account, userFilter, setIncome, setDebt, setExpenses, setGroupDetails });
+    }
+    setReload(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reload]);
 
   return (
-    <div className="App">
+    <>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Vite + React + TypeScript + Airbnb + Husky = 🔥</p>
-        <p>
-          <button className="rainbow-button" type="button" onClick={() => setCount((prevCount) => prevCount + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-          {' | '}
-          <a className="App-link" href="https://github.com/typicode/husky" target="_blank" rel="noopener noreferrer">
-            Husky Docs
-          </a>
-          {' | '}
-          <a className="App-link" href="https://github.com/airbnb/javascript" target="_blank" rel="noopener noreferrer">
-            Airbnb JS Style Guide
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://github.com/airbnb/javascript/tree/master/react"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Airbnb React Style Guide
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://github.com/alessandropisu/vite-react-ts-minimal-template"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Template repository
-          </a>
-        </p>
+        <SearchAppBar />
       </header>
-    </div>
+      <div className="App-body">
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}>
+          <Container>
+            <h3>User</h3>
+            <UserForm setToken={setToken} setAccount={setAccount} setUserFilter={setUserFilter} setReload={setReload} />
+          </Container>
+          <Container>
+            <Tabs
+              token={token}
+              account={account}
+              income={income}
+              expenses={expenses}
+              debt={debt}
+              groupDetails={groupDetails}
+              setReload={setReload}
+            />
+          </Container>
+        </Box>
+      </div>
+    </>
   );
 }
 

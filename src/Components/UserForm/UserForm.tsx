@@ -33,14 +33,9 @@ export default function UserForm({
         disablePortal
         options={options}
         sx={{ flex: 1 }}
-        renderInput={(params) => (
-          <TextField
-            id={params.id}
-            inputProps={params.inputProps}
-            InputLabelProps={params.InputLabelProps}
-            label="Account"
-          />
-        )}
+        // react/jsx-props-no-spreading
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="User Filter" />}
         onChange={(event, value) => setAccount(value)}
       />
       <TextField

@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
 import PaymentIcon from '@mui/icons-material/Payment';
 import { marksAsPaid } from '../Clients/Clients';
+import useSettings from '../../Hooks/useSettings';
 
 interface Row {
   id: string;
@@ -12,19 +13,8 @@ interface Row {
   amount: number;
 }
 
-export default function MovementsTab({
-  rows,
-  actions = false,
-  setReload = () => {},
-  token = '',
-  account = null,
-}: {
-  rows: Row[];
-  actions: boolean;
-  setReload: React.Dispatch<React.SetStateAction<boolean>>;
-  token: string;
-  account: string | null;
-}) {
+export default function MovementsTab({ rows, actions = false }: { rows: Row[]; actions: boolean }) {
+  const { token, account, setReload } = useSettings();
   const columns: GridColDef[] = [
     { field: 'transaction_id', headerName: '# Receipt', width: 90 },
     {

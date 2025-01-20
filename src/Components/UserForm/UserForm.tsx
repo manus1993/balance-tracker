@@ -2,20 +2,13 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
+import useSettings from '../../Hooks/useSettings';
 
-const options = ['AGUILA 3', 'CANARIO 3', 'PASEO NUEVO 53'];
+const options = ['AGUILA 3', 'CANARIO 3', 'PN53', 'TEST-GROUP'];
 
-export default function UserForm({
-  setToken,
-  setAccount,
-  setUserFilter,
-  setReload,
-}: {
-  setToken: React.Dispatch<React.SetStateAction<string>>;
-  setAccount: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserFilter: React.Dispatch<React.SetStateAction<string>>;
-  setReload: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function UserForm() {
+  const { setToken, setAccount, setUserFilter, setReload } = useSettings();
+
   return (
     <Box sx={{ display: 'flex', gap: 2, border: '0.5px solid', boxShadow: 3, padding: 2, borderRadius: 3 }}>
       <TextField

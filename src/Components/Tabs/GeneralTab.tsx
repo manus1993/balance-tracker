@@ -3,7 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 
 interface Row {
   concept: string;
-  detail: number;
+  detail: string;
 }
 
 export default function GeneralsTable({ rows }: { rows: Row[] }) {

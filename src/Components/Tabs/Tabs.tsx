@@ -8,7 +8,8 @@ import { Grid, Typography } from '@mui/material';
 import GeneralsTable from './GeneralTab';
 import MovementsTab from './MovementsTab';
 import MongoTab from './MongoTab';
-import { NewBatchModal, NewIncomeModal, NewExpenseModal } from './Modal';
+import BasicModal from './Modal';
+import useSettings from '../../Hooks/useSettings';
 
 interface ItemDetail {
   id: string;
@@ -19,25 +20,9 @@ interface ItemDetail {
   comments: string;
 }
 
-export default function Tabs({
-  token,
-  account,
-  income,
-  debt,
-  expenses,
-  groupDetails,
-  setReload,
-}: {
-  token: string;
-  account: string | null;
-  expenses: ItemDetail[];
-  income: ItemDetail[];
-  debt: ItemDetail[];
-  groupDetails: { concept: string; detail: any }[];
-  setReload: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export default function Tabs() {
+  const { token, account, income, expenses, debt, groupDetails, setReload } = useSettings();
   const [value, setValue] = React.useState('1');
-
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -61,23 +46,23 @@ export default function Tabs({
               Pending
             </Typography>
             <Grid container spacing={0.5}>
-              <NewBatchModal token={token} account={account} setReload={setReload} />
+              <BasicModal modal_type="debt" />
             </Grid>
-            <MovementsTab rows={debt} actions setReload={setReload} token={token} account={account} />
+            <MovementsTab rows={debt} actions />
             <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
               Incomes
             </Typography>
             <Grid container spacing={0.5}>
-              <NewIncomeModal token={token} account={account} setReload={setReload} />
+              <BasicModal modal_type="income" />
             </Grid>
-            <MovementsTab rows={income} actions={false} setReload={setReload} token={token} account={account} />
+            <MovementsTab rows={income} actions={false} />
             <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
               Expenses
             </Typography>
             <Grid container spacing={0.5}>
-              <NewExpenseModal token={token} account={account} setReload={setReload} />
+              <BasicModal modal_type="expenses" />
             </Grid>
-            <MovementsTab rows={expenses} actions={false} setReload={setReload} token={token} account={account} />
+            <MovementsTab rows={expenses} actions={false} />
           </Box>
         </TabPanel>
         <TabPanel value="3">

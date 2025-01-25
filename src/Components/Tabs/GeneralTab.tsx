@@ -12,8 +12,8 @@ export default function GeneralsTable({ rows }: { rows: Row[] }) {
       <Table sx={{ minWidth: 250 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Concepto</TableCell>
-            <TableCell align="right">Importe</TableCell>
+            <TableCell>Concept</TableCell>
+            <TableCell align="right">Amount</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

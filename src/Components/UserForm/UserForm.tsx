@@ -8,7 +8,7 @@ const options = ['AGUILA 3', 'CANARIO 3', 'PN53', 'TEST-GROUP'];
 
 export default function UserForm() {
   const { setToken, setAccount, setUserFilter, setReload } = useSettings();
-
+  const { account } = useSettings();
   return (
     <Box sx={{ display: 'flex', gap: 2, border: '0.5px solid', boxShadow: 3, padding: 2, borderRadius: 3 }}>
       <TextField
@@ -24,9 +24,9 @@ export default function UserForm() {
       />
       <Autocomplete
         disablePortal
+        value={account}
         options={options}
         sx={{ flex: 1 }}
-        // react/jsx-props-no-spreading
         // eslint-disable-next-line react/jsx-props-no-spreading
         renderInput={(params) => <TextField {...params} label="User Filter" />}
         onChange={(event, value) => setAccount(value)}

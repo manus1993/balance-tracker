@@ -117,9 +117,8 @@ export function MonthYearSelector({
         options={months}
         value={month} // Set the value prop
         sx={{ flex: 1 }}
-        renderInput={(params) => (
-          <TextField InputLabelProps={params.InputLabelProps} InputProps={params.InputProps} label="Month" />
-        )}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="Month" />}
         onChange={(event, value) => value && setMonth(value)}
       />
       <Autocomplete
@@ -128,9 +127,8 @@ export function MonthYearSelector({
         options={years}
         value={year} // Set the value prop
         sx={{ flex: 1 }}
-        renderInput={(params) => (
-          <TextField InputLabelProps={params.InputLabelProps} InputProps={params.InputProps} label="Year" />
-        )}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="Year" />}
         onChange={(event, value) => value && setYear(value)}
       />
     </>
@@ -166,9 +164,11 @@ export function CommentsSelector({ setComments }: { setComments: (comments: stri
 }
 
 export function CategorySelector({
+  category,
   setCategory,
   selectorOnly,
 }: {
+  category: string;
   setCategory: (category: string) => void;
   selectorOnly: boolean;
 }) {
@@ -177,11 +177,11 @@ export function CategorySelector({
       <Autocomplete
         disablePortal
         id="category"
+        value={category}
         options={categories}
         sx={{ flex: 1 }}
-        renderInput={(params) => (
-          <TextField InputLabelProps={params.InputLabelProps} InputProps={params.InputProps} label="Category" />
-        )}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="Category" />}
         onChange={(event, value) => value && setCategory(value)}
       />
     );
@@ -232,7 +232,7 @@ export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void 
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
       <AmountSelector setAmount={setAmount} />
       <CommentsSelector setComments={setComments} />
-      <CategorySelector setCategory={setCategory} selectorOnly />
+      <CategorySelector category={category} setCategory={setCategory} selectorOnly />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>
@@ -321,7 +321,7 @@ export function NewExpenseModa() {
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
       <AmountSelector setAmount={setAmount} />
       <CommentsSelector setComments={setComments} />
-      <CategorySelector setCategory={setCategory} selectorOnly={false} />
+      <CategorySelector category={category} setCategory={setCategory} selectorOnly={false} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>

@@ -22,7 +22,12 @@ interface ExpenseItems {
   expense_detail: ItemDetail[];
 }
 
-const useFetchData = () => {
+export function parseUsers(users: string[]) {
+  const cleanedList = users.map((item) => item.replace('DEPTO', '').trim());
+  return cleanedList.join(', ');
+}
+
+const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
   const { token, account, userFilter, setIncome, setExpenses, setDebt, setGroupDetails } = useSettings();
   const fetchData = async () => {
     const FetchUrl = `${url}transactions/parsed-data?group_id=${account}${userFilter ? `&user_id=${userFilter}` : ''}`;
@@ -76,11 +81,12 @@ const useFetchData = () => {
           { concept: 'Balance', detail: formatAsCurrency(response.data.group_details.balance) },
           { concept: 'Pending', detail: formatAsCurrency(response.data.group_details.total_debt) },
           { concept: 'Total Available', detail: formatAsCurrency(response.data.group_details.total_available) },
+          { concept: 'Users With Debt', detail: parseUsers(response.data.group_details.users_with_debt) },
         ]);
       })
       .catch((error) => {
-        // eslint-disable-next-line no-console
         console.error('There was an error!', error);
+        setAlert(true);
       });
   };
   return fetchData;

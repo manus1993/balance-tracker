@@ -6,18 +6,25 @@ import Tabs from '../Tabs/Tabs';
 import SearchAppBar from '../TopBar/TopBar';
 import useFetchData from '../Clients/Clients';
 import useSettings from '../../Hooks/useSettings';
+import Alert from '../Alert/Alert';
 
 export default function MainApp() {
-  const fetchData = useFetchData();
+  const [alert, setAlert] = useState(false);
+  const fetchData = useFetchData({ setAlert });
   const { reload, setReload } = useSettings();
 
   useEffect(() => {
+    if (alert) {
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    }
     if (reload) {
       fetchData();
     }
     setReload(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload]);
+  }, [reload, alert]);
 
   return (
     <>
@@ -32,6 +39,7 @@ export default function MainApp() {
           </Container>
           <Container>
             <Tabs />
+            <Alert alert={alert} />
           </Container>
         </Box>
       </div>

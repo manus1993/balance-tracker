@@ -7,7 +7,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Grid, Typography } from '@mui/material';
 import GeneralsTable from './GeneralTab';
 import MovementsTab from './MovementsTab';
-import MongoTab from './MongoTab';
+import { MongoChart } from './MongoTab';
 import BasicModal from './Modal';
 import useSettings from '../../Hooks/useSettings';
 
@@ -66,7 +66,7 @@ export default function Tabs() {
           </Box>
         </TabPanel>
         <TabPanel value="3">
-          <MongoTab />
+          <MongoChart />
         </TabPanel>
       </TabContext>
     </Box>

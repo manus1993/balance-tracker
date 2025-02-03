@@ -60,14 +60,14 @@ export default function MovementsTab({ rows, actions = false }: { rows: Row[]; a
   }
 
   return (
-    <Box sx={{ height: 380, width: '100%' }}>
+    <Box sx={{ height: 450, width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 6,
             },
           },
         }}

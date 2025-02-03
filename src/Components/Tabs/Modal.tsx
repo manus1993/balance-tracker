@@ -284,7 +284,7 @@ export function NewIncomeModa({ handleClose }: { handleClose: () => void }) {
   );
 }
 
-export function NewExpenseModa() {
+export function NewExpenseModal({ handleClose }: { handleClose: () => void }) {
   const [submit, setSubmit] = React.useState(false);
   const { token, account, setReload } = useSettings();
   const [month, setMonth] = React.useState('');
@@ -302,8 +302,9 @@ export function NewExpenseModa() {
       createNewTransaction(token, account, month, year, amount, comments, category, user, name, movementType);
       setReload(true);
       setSubmit(false);
+      handleClose();
     }
-  }, [submit, token, account, month, year, amount, comments, category, nameDetail, setReload]);
+  }, [submit, token, account, month, year, amount, comments, category, nameDetail, setReload, handleClose]);
   return (
     <Box
       sx={{
@@ -339,7 +340,7 @@ export default function BasicModal({ modal_type }: { modal_type: ModalType }) {
   const ModalSwitch = {
     income: <NewIncomeModa handleClose={handleClose} />,
     debt: <NewReceiptBatchModal handleClose={handleClose} />,
-    expenses: <NewExpenseModa />,
+    expenses: <NewExpenseModal handleClose={handleClose} />,
   };
   const modal = ModalSwitch[modal_type];
 

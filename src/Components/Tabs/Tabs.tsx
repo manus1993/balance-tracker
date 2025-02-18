@@ -43,26 +43,26 @@ export default function Tabs() {
         <TabPanel value="2">
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
-              Pending
-            </Typography>
-            <Grid container spacing={0.5}>
-              <BasicModal modal_type="debt" />
-            </Grid>
-            <MovementsTab rows={debt} actions />
-            <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
               Incomes
             </Typography>
             <Grid container spacing={0.5}>
               <BasicModal modal_type="income" />
             </Grid>
-            <MovementsTab rows={income} actions={false} />
+            <MovementsTab type="income" rows={income} actions />
+            <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
+              Pending
+            </Typography>
+            <Grid container spacing={0.5}>
+              <BasicModal modal_type="debt" />
+            </Grid>
+            <MovementsTab type="debt" rows={debt} actions />
             <Typography sx={{ flex: '1 1 100%' }} variant="h5" id="tableTitle" component="div">
               Expenses
             </Typography>
             <Grid container spacing={0.5}>
               <BasicModal modal_type="expenses" />
             </Grid>
-            <MovementsTab rows={expenses} actions={false} />
+            <MovementsTab type="expense" rows={expenses} actions={false} />
           </Box>
         </TabPanel>
         <TabPanel value="3">

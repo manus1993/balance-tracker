@@ -2,7 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
 import PaymentIcon from '@mui/icons-material/Payment';
-import { marksAsPaid } from '../Clients/Clients';
+import DownloadIcon from '@mui/icons-material/Download';
+import { marksAsPaid, downloadReceipt } from '../Clients/Clients';
 import useSettings from '../../Hooks/useSettings';
 
 interface Row {
@@ -13,7 +14,7 @@ interface Row {
   amount: number;
 }
 
-export default function MovementsTab({ rows, actions = false }: { rows: Row[]; actions: boolean }) {
+export default function MovementsTab({ type, rows, actions = false }: { type: string; rows: Row[]; actions: boolean }) {
   const { token, account, setReload } = useSettings();
   const columns: GridColDef[] = [
     { field: 'transaction_id', headerName: '# Receipt', width: 90 },
@@ -45,20 +46,34 @@ export default function MovementsTab({ rows, actions = false }: { rows: Row[]; a
   ];
 
   if (actions) {
-    columns.push({
-      field: 'actions',
-      type: 'actions',
-      getActions: (params) => [
-        <GridActionsCellItem
-          key={`action-${params.row.id}`} // Add a unique key prop
-          label="Pagado"
-          icon={<PaymentIcon />}
-          onClick={() => marksAsPaid(token, account, params.row, setReload)}
-        />,
-      ],
-    });
+    if (type === 'debt') {
+      columns.push({
+        field: 'actions',
+        type: 'actions',
+        getActions: (params) => [
+          <GridActionsCellItem
+            key={`action-${params.row.id}`} // Add a unique key prop
+            label="Pagado"
+            icon={<PaymentIcon />}
+            onClick={() => marksAsPaid(token, account, params.row, setReload)} // Correct function name
+          />,
+        ],
+      });
+    } else if (type === 'income') {
+      columns.push({
+        field: 'actions',
+        type: 'actions',
+        getActions: (params) => [
+          <GridActionsCellItem
+            key={`action-${params.row.id}`}
+            label="Download"
+            icon={<DownloadIcon />}
+            onClick={() => downloadReceipt(token, account, params.row)}
+          />,
+        ],
+      });
+    }
   }
-
   return (
     <Box sx={{ height: 450, width: '100%' }}>
       <DataGrid

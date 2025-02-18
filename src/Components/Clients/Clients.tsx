@@ -217,3 +217,38 @@ export function createNewTransaction(
       console.error('There was an error!', error);
     });
 }
+
+export function downloadReceipt(token: string, account: string | null, row: ItemDetail) {
+  const SubmitUrl = `${url}report/download/receipts`;
+
+  axios
+    .post(
+      SubmitUrl,
+      {
+        transaction_id: row.transaction_id,
+        group: account,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob', // Important: tells Axios to handle the response as binary data
+      },
+    )
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const newUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = newUrl;
+      a.download = 'receipts.pdf'; // Ensure the filename matches the backend
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(newUrl); // Cleanup the URL
+    })
+    .catch((error) => {
+      console.error('There was an error!', error);
+    });
+}

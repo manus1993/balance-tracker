@@ -2,7 +2,7 @@ import axios from 'axios';
 import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
 
-const url = 'http://ec2-3-140-252-95.us-east-2.compute.amazonaws.com:8001/v1/';
+const url = 'https://ec2-3-140-252-95.us-east-2.compute.amazonaws.com/api/v1/';
 interface ItemDetail {
   user: string;
   name: string;

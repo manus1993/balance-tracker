@@ -322,7 +322,7 @@ export function editTransaction(
   newName: string | null,
   setReload: (reload: boolean) => void,
 ) {
-  const SubmitUrl = `http://0.0.0.0:8000/v1/transactions/update-transaction/${account}/${row.transaction_id}?name=${row.name}`;
+  const SubmitUrl = `${url}transactions/update-transaction/${account}/${row.transaction_id}?name=${row.name}`;
 
   // Construct payload dynamically, removing null values
   const payload: Record<string, string> = { amount, comments };

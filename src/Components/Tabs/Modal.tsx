@@ -2,11 +2,11 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
+import { Grid, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useSettings from '../../Hooks/useSettings';
-import { createNewBatch, createNewTransaction } from '../Clients/Clients';
+import { createNewBatch, createNewTransaction, downloadReceipts, downloadReport, ItemDetail } from '../Clients/Clients';
 
 const style = {
   position: 'absolute',
@@ -19,36 +19,6 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
-export function ButtonDesign({ modal_type, handle_open }: { modal_type: string; handle_open: () => void }) {
-  const buttonProps = {
-    onClick: handle_open,
-    variant: 'contained' as const,
-  };
-
-  let buttonConfig = {
-    color: undefined as 'success' | 'warning' | 'primary' | undefined,
-    label: '',
-  };
-
-  switch (modal_type) {
-    case 'income':
-      buttonConfig = { color: 'success', label: 'New Income' };
-      break;
-    case 'debt':
-      buttonConfig = { color: 'primary', label: 'New Receipts Batch' };
-      break;
-    default:
-      buttonConfig = { color: 'warning', label: 'New Expense' };
-      break;
-  }
-
-  return (
-    <Button onClick={buttonProps.onClick} variant={buttonProps.variant} color={buttonConfig.color}>
-      {buttonConfig.label}
-    </Button>
-  );
-}
 
 const months = [
   'January',
@@ -68,6 +38,39 @@ const months = [
 const years = ['2024', '2025', '2026', '2027', '2028', '2029', '2030'];
 
 const categories = ['MONTLY_INCOME', 'EXTRAORDINARY_INCOME'];
+
+export function ButtonDesign({ modal_type, handleOpen }: { modal_type: string; handleOpen: () => void }) {
+  const buttonProps = {
+    onClick: handleOpen,
+    variant: 'contained' as const,
+  };
+
+  let buttonConfig = {
+    color: undefined as 'success' | 'warning' | 'primary' | undefined,
+    label: '',
+  };
+
+  switch (modal_type) {
+    case 'income':
+      buttonConfig = { color: 'success', label: 'New Income' };
+      break;
+    case 'debt':
+      buttonConfig = { color: 'primary', label: 'New Receipts Batch' };
+      break;
+    case 'get_receipt':
+      buttonConfig = { color: 'primary', label: 'Get Receipt' };
+      break;
+    default:
+      buttonConfig = { color: 'warning', label: 'New Expense' };
+      break;
+  }
+
+  return (
+    <Button onClick={buttonProps.onClick} variant={buttonProps.variant} color={buttonConfig.color}>
+      {buttonConfig.label}
+    </Button>
+  );
+}
 
 export function UserIDSelector({ setUserID }: { setUserID: (userID: string) => void }) {
   return (
@@ -198,6 +201,7 @@ export function CategorySelector({
     />
   );
 }
+
 export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void }) {
   const [submit, setSubmit] = React.useState(false);
   const { token, account, setReload } = useSettings();
@@ -240,7 +244,7 @@ export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void 
   );
 }
 
-export function NewIncomeModa({ handleClose }: { handleClose: () => void }) {
+export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
   const [submit, setSubmit] = React.useState(false);
   const { token, account, setReload } = useSettings();
   const [month, setMonth] = React.useState('');
@@ -330,23 +334,118 @@ export function NewExpenseModal({ handleClose }: { handleClose: () => void }) {
   );
 }
 
+export function GetReceiptsModal({ handleClose }: { handleClose: () => void }) {
+  const [submit, setSubmit] = React.useState(false);
+  const { token, account } = useSettings();
+  const [initial, setInitial] = React.useState(0);
+  const [final, setFinal] = React.useState(0);
+
+  React.useEffect(() => {
+    if (submit) {
+      console.log('Get receipts from', initial, 'to', final);
+      downloadReceipts(token, account, initial, final);
+      setSubmit(false);
+      handleClose();
+    }
+  }, [submit, token, account, initial, final, handleClose]);
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+        border: '0.5px solid',
+        boxShadow: 3,
+        padding: 2,
+        borderRadius: 3,
+        flexDirection: 'column',
+      }}
+    >
+      <Typography variant="h6">Get Receipts</Typography>
+      <TextField
+        id="initial"
+        variant="outlined"
+        label="Initial"
+        sx={{ flex: 1 }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setInitial(Number(event.target.value));
+        }}
+      />
+      <TextField
+        id="final"
+        variant="outlined"
+        label="Final"
+        sx={{ flex: 1 }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setFinal(Number(event.target.value));
+        }}
+      />
+      <Button variant="contained" onClick={() => setSubmit(true)}>
+        Submit
+      </Button>
+    </Box>
+  );
+}
+
+export function GetReportModal({ handleClose }: { handleClose: () => void }) {
+  const [submit, setSubmit] = React.useState(false);
+  const { token, account } = useSettings();
+  const [month, setMonth] = React.useState('');
+  const [year, setYear] = React.useState('');
+
+  React.useEffect(() => {
+    if (submit) {
+      console.log('Get report for', month, year);
+      downloadReport(token, account, month, year);
+      setSubmit(false);
+      handleClose();
+    }
+  }, [submit, token, account, month, year, handleClose]);
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+        border: '0.5px solid',
+        boxShadow: 3,
+        padding: 2,
+        borderRadius: 3,
+        flexDirection: 'column',
+      }}
+    >
+      <Typography variant="h6">Get Report</Typography>
+      <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
+      <Button variant="contained" onClick={() => setSubmit(true)}>
+        Submit
+      </Button>
+    </Box>
+  );
+}
+
 type ModalType = 'income' | 'debt' | 'expenses';
 
 export default function BasicModal({ modal_type }: { modal_type: ModalType }) {
   const [open, setOpen] = React.useState(false);
+  const [openCustom, setOpenCustom] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenCustom = () => setOpenCustom(true);
+  const handleCloseCustom = () => setOpenCustom(false);
 
   const ModalSwitch = {
-    income: <NewIncomeModa handleClose={handleClose} />,
+    income: <NewIncomeModal handleClose={handleClose} />,
     debt: <NewReceiptBatchModal handleClose={handleClose} />,
     expenses: <NewExpenseModal handleClose={handleClose} />,
   };
   const modal = ModalSwitch[modal_type];
 
+  const customModal = <GetReceiptsModal handleClose={handleCloseCustom} />;
+
   return (
     <div>
-      <ButtonDesign modal_type={modal_type} handle_open={handleOpen} />
+      <div style={{ display: 'flex', gap: '10px' }}>
+        <ButtonDesign modal_type={modal_type} handleOpen={handleOpen} />
+        {modal_type === 'income' && <ButtonDesign modal_type="get_receipt" handleOpen={handleOpenCustom} />}
+      </div>
       <Modal
         open={open}
         onClose={handleClose}
@@ -355,6 +454,16 @@ export default function BasicModal({ modal_type }: { modal_type: ModalType }) {
       >
         <Box sx={style}>{modal}</Box>
       </Modal>
+      {modal_type === 'income' && (
+        <Modal
+          open={openCustom}
+          onClose={handleCloseCustom}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>{customModal}</Box>
+        </Modal>
+      )}
     </div>
   );
 }

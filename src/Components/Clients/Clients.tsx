@@ -3,12 +3,13 @@ import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
 
 const url = 'https://ec2-3-140-252-95.us-east-2.compute.amazonaws.com/api/v1/';
-interface ItemDetail {
+export interface ItemDetail {
   user: string;
   name: string;
   transaction_id: number;
   amount: number;
   comments: string;
+  category: string;
 }
 
 interface DebtItems {
@@ -218,21 +219,21 @@ export function createNewTransaction(
     });
 }
 
-export function downloadReceipt(token: string, account: string | null, row: ItemDetail) {
+export function downloadReceipts(token: string, account: string | null, initial: number, final: number) {
   const SubmitUrl = `${url}report/download/receipts`;
-
   axios
     .post(
       SubmitUrl,
       {
-        transaction_id: row.transaction_id,
+        start_at: initial,
+        end_at: final,
         group: account,
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'blob', // Important: tells Axios to handle the response as binary data
+        responseType: 'blob',
       },
     )
     .then((response) => {
@@ -241,14 +242,111 @@ export function downloadReceipt(token: string, account: string | null, row: Item
 
       const a = document.createElement('a');
       a.href = newUrl;
-      a.download = 'receipts.pdf'; // Ensure the filename matches the backend
+      a.download = 'receipts.pdf';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
 
-      window.URL.revokeObjectURL(newUrl); // Cleanup the URL
+      window.URL.revokeObjectURL(newUrl);
     })
     .catch((error) => {
+      console.error('There was an error!', error);
+    });
+}
+
+export function downloadReport(token: string, account: string | null, month: string, year: string) {
+  const SubmitUrl = `${url}report/download/balance`;
+  axios
+    .post(
+      SubmitUrl,
+      {
+        year,
+        month: monthsMapping[month],
+        group: account,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'blob',
+      },
+    )
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const newUrl = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = newUrl;
+      a.download = 'receipts.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(newUrl);
+    })
+    .catch((error) => {
+      console.error('There was an error!', error);
+    });
+}
+
+export function deleteTransaction(
+  token: string,
+  account: string | null,
+  row: ItemDetail,
+  setReload: (reload: boolean) => void,
+) {
+  const SubmitUrl = `${url}transactions/delete-transaction/${account}/${row.transaction_id}?name=${row.name}`;
+  axios
+    .delete(SubmitUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(() => {
+      console.log('Transaction deleted');
+      setReload(true);
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error('There was an error!', error);
+    });
+}
+
+export function editTransaction(
+  token: string,
+  account: string | null,
+  row: ItemDetail,
+  amount: string,
+  category: string | null,
+  comments: string,
+  newName: string | null,
+  setReload: (reload: boolean) => void,
+) {
+  const SubmitUrl = `http://0.0.0.0:8000/v1/transactions/update-transaction/${account}/${row.transaction_id}?name=${row.name}`;
+
+  // Construct payload dynamically, removing null values
+  const payload: Record<string, string> = { amount, comments };
+
+  if (category !== null) {
+    payload.category = category;
+  }
+
+  if (newName !== null) {
+    payload.name = newName;
+  }
+
+  axios
+    .put(SubmitUrl, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(() => {
+      console.log('Transaction edited');
+      setReload(true);
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
       console.error('There was an error!', error);
     });
 }

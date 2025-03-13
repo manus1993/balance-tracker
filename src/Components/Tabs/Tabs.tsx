@@ -62,7 +62,7 @@ export default function Tabs() {
             <Grid container spacing={0.5}>
               <BasicModal modal_type="expenses" />
             </Grid>
-            <MovementsTab type="expense" rows={expenses} actions={false} />
+            <MovementsTab type="expense" rows={expenses} actions />
           </Box>
         </TabPanel>
         <TabPanel value="3">

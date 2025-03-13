@@ -4,6 +4,7 @@ interface ItemDetail {
   transaction_id: number;
   amount: number;
   comments: string;
+  category: string;
 }
 
 interface DebtItems {

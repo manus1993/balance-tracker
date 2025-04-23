@@ -1,0 +1,44 @@
+name: Deploy WebApp to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build project
+      run: yarn build
+
+    - name: Upload to EC2
+      uses: easingthemes/ssh-deploy@main
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${{ secrets.EC2_SERVER_IP }}
+        REMOTE_USER: ${{ secrets.EC2_REMOTE_USER }}
+        SOURCE: dist
+        TARGET: /var/www/html
+        ARGS: "-avz --delete"
+
+    - name: Reload NGINX
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_SERVER_IP }}
+        username: ${{ secrets.EC2_REMOTE_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          ssudo nginx -s reload

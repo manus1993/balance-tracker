@@ -21,7 +21,7 @@ interface ItemDetail {
 }
 
 export default function Tabs() {
-  const { token, account, income, expenses, debt, groupDetails, setReload } = useSettings();
+  const { income, expenses, debt, groupDetails } = useSettings();
   const [value, setValue] = React.useState('1');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);

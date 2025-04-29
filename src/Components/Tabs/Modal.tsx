@@ -87,10 +87,11 @@ export function UserIDSelector({ setUserID }: { setUserID: (userID: string) => v
   );
 }
 
-export function NameSelector({ setName }: { setName: (name: string) => void }) {
+export function NameSelector({ name, setName }: { name: string; setName: (name: string) => void }) {
   return (
     <TextField
       id="name"
+      value={name}
       variant="outlined"
       label="Name"
       sx={{ flex: 1 }}
@@ -138,10 +139,11 @@ export function MonthYearSelector({
   );
 }
 
-export function AmountSelector({ setAmount }: { setAmount: (amount: string) => void }) {
+export function AmountSelector({ amount, setAmount }: { amount: string; setAmount: (amount: string) => void }) {
   return (
     <TextField
       id="amount"
+      value={amount}
       variant="outlined"
       label="Amount"
       sx={{ flex: 1 }}
@@ -152,11 +154,18 @@ export function AmountSelector({ setAmount }: { setAmount: (amount: string) => v
   );
 }
 
-export function CommentsSelector({ setComments }: { setComments: (comments: string) => void }) {
+export function CommentsSelector({
+  comments,
+  setComments,
+}: {
+  comments: string;
+  setComments: (comments: string) => void;
+}) {
   return (
     <TextField
       id="comments"
       variant="outlined"
+      value={comments}
       label="Comments"
       size="medium"
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +194,9 @@ export function CategorySelector({
         sx={{ flex: 1 }}
         // eslint-disable-next-line react/jsx-props-no-spreading
         renderInput={(params) => <TextField {...params} label="Category" />}
-        onChange={(event, value) => value && setCategory(value)}
+        onChange={(event, value) => {
+          setCategory(value ?? '');
+        }}
       />
     );
   }
@@ -194,6 +205,7 @@ export function CategorySelector({
       id="category"
       variant="outlined"
       label="Category"
+      value={category}
       sx={{ flex: 1 }}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         setCategory(event.target.value);
@@ -234,8 +246,8 @@ export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void 
     >
       <Typography variant="h6">New Receipt Batch</Typography>
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector setAmount={setAmount} />
-      <CommentsSelector setComments={setComments} />
+      <AmountSelector amount="" setAmount={setAmount} />
+      <CommentsSelector comments="" setComments={setComments} />
       <CategorySelector category={category} setCategory={setCategory} selectorOnly />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
@@ -279,8 +291,8 @@ export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
       <Typography variant="h6">New Income</Typography>
       <UserIDSelector setUserID={setUserID} />
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector setAmount={setAmount} />
-      <CommentsSelector setComments={setComments} />
+      <AmountSelector amount="" setAmount={setAmount} />
+      <CommentsSelector comments="" setComments={setComments} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>
@@ -322,10 +334,10 @@ export function NewExpenseModal({ handleClose }: { handleClose: () => void }) {
       }}
     >
       <Typography variant="h6">New Expense</Typography>
-      <NameSelector setName={setNameDetail} />
+      <NameSelector name="" setName={setNameDetail} />
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector setAmount={setAmount} />
-      <CommentsSelector setComments={setComments} />
+      <AmountSelector amount="" setAmount={setAmount} />
+      <CommentsSelector comments="" setComments={setComments} />
       <CategorySelector category={category} setCategory={setCategory} selectorOnly={false} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit

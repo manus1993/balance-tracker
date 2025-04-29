@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Category } from '@mui/icons-material';
 import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
 
@@ -48,6 +49,7 @@ const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
               amount: detail.amount,
               user: detail.user,
               comments: detail.comments,
+              category: detail.category,
             })),
           ),
         );
@@ -60,6 +62,7 @@ const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
               amount: detail.amount,
               user: detail.user,
               comments: detail.comments,
+              category: detail.category,
             })),
           ),
         );
@@ -73,6 +76,7 @@ const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
               amount: detail.amount,
               user: detail.user,
               comments: detail.comments,
+              category: detail.category,
             })),
           ),
         );

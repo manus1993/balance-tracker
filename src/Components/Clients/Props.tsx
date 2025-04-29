@@ -1,12 +1,3 @@
-interface ItemDetail {
-  user: string;
-  name: string;
-  transaction_id: number;
-  amount: number;
-  comments: string;
-  category: string;
-}
-
 interface DebtItems {
   debt_detail: ItemDetail[];
 }
@@ -21,4 +12,5 @@ interface ItemDetail {
   transaction_id: number;
   amount: number;
   comments: string;
+  category: string;
 }

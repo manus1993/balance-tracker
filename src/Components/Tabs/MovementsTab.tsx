@@ -17,6 +17,7 @@ interface Row {
   user: string;
   name: string;
   amount: number;
+  category: string;
 }
 
 const style = {
@@ -55,6 +56,13 @@ export function EditTransactionModal({
     }
   }, [submit, token, account, handleClose, row, amount, category, comments, nameDetail, setReload]);
 
+  React.useEffect(() => {
+    setCategory(row.category || '');
+    setAmount(row.amount.toString());
+    setComments(row.comments || '');
+    setNameDetail(row.name || '');
+  }, [row]);
+
   return (
     <Box
       sx={{
@@ -70,12 +78,12 @@ export function EditTransactionModal({
       <Typography variant="h6">Edit Transaction</Typography>
       {movementType !== 'income' ? (
         <>
-          <NameSelector setName={setNameDetail} />
+          <NameSelector name={nameDetail || ''} setName={setNameDetail} />
           <CategorySelector category={category || ''} setCategory={setCategory} selectorOnly={false} />
         </>
       ) : null}
-      <AmountSelector setAmount={setAmount} />
-      <CommentsSelector setComments={setComments} />
+      <AmountSelector amount={amount} setAmount={setAmount} />
+      <CommentsSelector comments={comments} setComments={setComments} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>
@@ -101,7 +109,7 @@ export default function MovementsTab({ type, rows, actions = false }: { type: st
   };
 
   const columns: GridColDef[] = [
-    { field: 'transaction_id', headerName: '# Receipt', width: 60 },
+    { field: 'transaction_id', headerName: '# Receipt', width: 90 },
     {
       field: 'user',
       headerName: 'User',
@@ -124,7 +132,13 @@ export default function MovementsTab({ type, rows, actions = false }: { type: st
     {
       field: 'comments',
       headerName: 'Comments',
-      width: 500,
+      width: 300,
+      editable: false,
+    },
+    {
+      field: 'category',
+      headerName: 'Category',
+      width: 200,
       editable: false,
     },
   ];

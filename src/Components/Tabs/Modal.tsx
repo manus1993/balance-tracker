@@ -246,8 +246,8 @@ export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void 
     >
       <Typography variant="h6">New Receipt Batch</Typography>
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector amount="" setAmount={setAmount} />
-      <CommentsSelector comments="" setComments={setComments} />
+      <AmountSelector amount={amount} setAmount={setAmount} />
+      <CommentsSelector comments={comments} setComments={setComments} />
       <CategorySelector category={category} setCategory={setCategory} selectorOnly />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
@@ -291,8 +291,8 @@ export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
       <Typography variant="h6">New Income</Typography>
       <UserIDSelector setUserID={setUserID} />
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector amount="" setAmount={setAmount} />
-      <CommentsSelector comments="" setComments={setComments} />
+      <AmountSelector amount={amount} setAmount={setAmount} />
+      <CommentsSelector comments={comments} setComments={setComments} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>
@@ -334,10 +334,10 @@ export function NewExpenseModal({ handleClose }: { handleClose: () => void }) {
       }}
     >
       <Typography variant="h6">New Expense</Typography>
-      <NameSelector name="" setName={setNameDetail} />
+      <NameSelector name={nameDetail} setName={setNameDetail} />
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
-      <AmountSelector amount="" setAmount={setAmount} />
-      <CommentsSelector comments="" setComments={setComments} />
+      <AmountSelector amount={amount} setAmount={setAmount} />
+      <CommentsSelector comments={comments} setComments={setComments} />
       <CategorySelector category={category} setCategory={setCategory} selectorOnly={false} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit

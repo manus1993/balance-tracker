@@ -3,7 +3,7 @@ import { Category } from '@mui/icons-material';
 import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
 
-const url = 'https://ec2-3-140-252-95.us-east-2.compute.amazonaws.com/api/v1/';
+const url = 'https://balance-tracker.info/api/v1/';
 export interface ItemDetail {
   user: string;
   name: string;

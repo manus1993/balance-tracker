@@ -79,7 +79,7 @@ export function EditTransactionModal({
       {movementType !== 'income' ? (
         <>
           <NameSelector name={nameDetail || ''} setName={setNameDetail} />
-          <CategorySelector category={category || ''} setCategory={setCategory} selectorOnly={false} />
+          <CategorySelector category={category || ''} setCategory={setCategory} movementType="expense" />
         </>
       ) : null}
       <AmountSelector amount={amount} setAmount={setAmount} />

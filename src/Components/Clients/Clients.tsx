@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Category } from '@mui/icons-material';
 import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
 

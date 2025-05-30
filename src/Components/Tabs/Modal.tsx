@@ -37,7 +37,17 @@ const months = [
 
 const years = ['2024', '2025', '2026', '2027', '2028', '2029', '2030'];
 
-const categories = ['MONTLY_INCOME', 'EXTRAORDINARY_INCOME'];
+const categoriesIncome = ['MONTLY_INCOME', 'EXTRAORDINARY_INCOME'];
+const categoriesExpenses = [
+  'CFE',
+  'ELEVADOR MANTENIMIENTO',
+  'Gastos Administrativos',
+  'Gastos Mensuales',
+  'Limpieza',
+  'Protección Civil',
+  'Jardinería',
+  'Vigilancia',
+];
 
 export function ButtonDesign({ modal_type, handleOpen }: { modal_type: string; handleOpen: () => void }) {
   const buttonProps = {
@@ -178,37 +188,24 @@ export function CommentsSelector({
 export function CategorySelector({
   category,
   setCategory,
-  selectorOnly,
+  movementType,
 }: {
   category: string;
   setCategory: (category: string) => void;
-  selectorOnly: boolean;
+  movementType: string;
 }) {
-  if (selectorOnly) {
-    return (
-      <Autocomplete
-        disablePortal
-        id="category"
-        value={category}
-        options={categories}
-        sx={{ flex: 1 }}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        renderInput={(params) => <TextField {...params} label="Category" />}
-        onChange={(event, value) => {
-          setCategory(value ?? '');
-        }}
-      />
-    );
-  }
+  const categories = movementType === 'income' ? categoriesIncome : categoriesExpenses;
   return (
-    <TextField
+    <Autocomplete
+      disablePortal
       id="category"
-      variant="outlined"
-      label="Category"
       value={category}
+      options={categories}
       sx={{ flex: 1 }}
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        setCategory(event.target.value);
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      renderInput={(params) => <TextField {...params} label="Category" />}
+      onChange={(event, value) => {
+        setCategory(value ?? '');
       }}
     />
   );
@@ -248,7 +245,7 @@ export function NewReceiptBatchModal({ handleClose }: { handleClose: () => void 
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
       <AmountSelector amount={amount} setAmount={setAmount} />
       <CommentsSelector comments={comments} setComments={setComments} />
-      <CategorySelector category={category} setCategory={setCategory} selectorOnly />
+      <CategorySelector category={category} setCategory={setCategory} movementType="income" />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>
@@ -338,7 +335,7 @@ export function NewExpenseModal({ handleClose }: { handleClose: () => void }) {
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
       <AmountSelector amount={amount} setAmount={setAmount} />
       <CommentsSelector comments={comments} setComments={setComments} />
-      <CategorySelector category={category} setCategory={setCategory} selectorOnly={false} />
+      <CategorySelector category={category} setCategory={setCategory} movementType="expense" />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>

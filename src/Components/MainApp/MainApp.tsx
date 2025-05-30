@@ -34,7 +34,7 @@ export default function MainApp() {
       <div className="App-body">
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}>
           <Container>
-            <h3>User</h3>
+            <h3>User Info</h3>
             <UserForm />
           </Container>
           <Container>

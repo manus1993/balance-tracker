@@ -10,7 +10,19 @@ export default function UserForm() {
   const { setToken, setAccount, setUserFilter, setReload } = useSettings();
   const { account } = useSettings();
   return (
-    <Box sx={{ display: 'flex', gap: 2, border: '0.5px solid', boxShadow: 3, padding: 2, borderRadius: 3 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' }, // column on mobile, row on larger screens
+        gap: 2,
+        border: '0.5px solid',
+        boxShadow: 3,
+        padding: 2,
+        borderRadius: 3,
+        maxWidth: '100%',
+        margin: 'auto',
+      }}
+    >
       <TextField
         id="token"
         type="password"
@@ -28,7 +40,7 @@ export default function UserForm() {
         options={options}
         sx={{ flex: 1 }}
         // eslint-disable-next-line react/jsx-props-no-spreading
-        renderInput={(params) => <TextField {...params} label="User Filter" />}
+        renderInput={(params) => <TextField {...params} label="Group" />}
         onChange={(event, value) => setAccount(value)}
       />
       <TextField

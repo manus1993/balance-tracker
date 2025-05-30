@@ -39,9 +39,11 @@ export default function GeneralsTable({ rows }: { rows: Row[] }) {
 
   return (
     <>
-      <Button onClick={buttonProps.onClick} variant={buttonProps.variant} color="primary">
-        Get Monthly Report
-      </Button>
+      <Box sx={{ mb: 2 }}>
+        <Button onClick={buttonProps.onClick} variant={buttonProps.variant} color="primary">
+          Get Monthly Report
+        </Button>
+      </Box>
       <Modal
         open={open}
         onClose={handleClose}

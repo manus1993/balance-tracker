@@ -5,6 +5,8 @@ import Modal from '@mui/material/Modal';
 import { Grid, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
+import { useEffect } from 'react';
 import useSettings from '../../Hooks/useSettings';
 import { createNewBatch, createNewTransaction, downloadReceipts, downloadReport, ItemDetail } from '../Clients/Clients';
 
@@ -97,11 +99,27 @@ export function UserIDSelector({ setUserID }: { setUserID: (userID: string) => v
   );
 }
 
-export function NameSelector({ name, setName }: { name: string; setName: (name: string) => void }) {
+export function NameSelector({
+  name,
+  setName,
+  enabled = true,
+}: {
+  name: string;
+  setName: (name: string) => void;
+  // eslint-disable-next-line react/require-default-props
+  enabled?: boolean;
+}) {
+  useEffect(() => {
+    if (!enabled && name !== '') {
+      setName('');
+    }
+  }, [enabled, name, setName]);
+
   return (
     <TextField
       id="name"
       value={name}
+      disabled={!enabled}
       variant="outlined"
       label="Name"
       sx={{ flex: 1 }}
@@ -261,17 +279,19 @@ export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
   const [amount, setAmount] = React.useState('');
   const [comments, setComments] = React.useState('');
   const [userID, setUserID] = React.useState('');
+  const [nameDetail, setNameDetail] = React.useState('');
+  const [enableName, setEnableName] = React.useState(false);
   const category = 'MONTLY_INCOME';
 
   React.useEffect(() => {
     if (submit) {
       const user = userID;
-      createNewTransaction(token, account, month, year, amount, comments, category, user, '', 'income');
+      createNewTransaction(token, account, month, year, amount, comments, category, user, nameDetail, 'income');
       setReload(true);
       handleClose();
       setSubmit(false);
     }
-  }, [submit, token, account, month, year, amount, comments, category, userID, setReload, handleClose]);
+  }, [submit, token, account, month, year, amount, comments, category, userID, setReload, handleClose, nameDetail]);
 
   return (
     <Box
@@ -290,6 +310,19 @@ export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
       <AmountSelector amount={amount} setAmount={setAmount} />
       <CommentsSelector comments={comments} setComments={setComments} />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Checkbox
+          checked={enableName}
+          onChange={(event) => setEnableName(event.target.checked)}
+          inputProps={{ 'aria-label': 'Enable name input' }}
+        />
+        <Typography variant="body2" color="warning.main">
+          Enable name field (Warning: only if necessary)
+        </Typography>
+      </Box>
+
+      <NameSelector name={nameDetail} setName={setNameDetail} enabled={enableName} />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>

@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import useSettings from '../../Hooks/useSettings';
 
-const options = ['AGUILA 3', 'CANARIO 3', 'PN53', 'CANARIO-53', 'CANARIO-52', 'CANARIO-51', 'AGUILA-72', 'AGUILA-81'];
+const options = ['AGUILA 3', 'Paseo Nuevo 53', 'CANARIO-53', 'CANARIO-52', 'AGUILA-72', 'AGUILA-81'];
 
 export default function UserForm() {
   const { setToken, setAccount, setUserFilter, setReload } = useSettings();

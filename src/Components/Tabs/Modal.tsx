@@ -39,7 +39,7 @@ const months = [
 
 const years = ['2024', '2025', '2026', '2027', '2028', '2029', '2030'];
 
-const categoriesIncome = ['MONTLY_INCOME', 'EXTRAORDINARY_INCOME'];
+const categoriesIncome = ['MONTHLY_INCOME', 'EXTRAORDINARY_INCOME'];
 const categoriesExpenses = [
   'CFE',
   'ELEVADOR MANTENIMIENTO',
@@ -281,7 +281,7 @@ export function NewIncomeModal({ handleClose }: { handleClose: () => void }) {
   const [userID, setUserID] = React.useState('');
   const [nameDetail, setNameDetail] = React.useState('');
   const [enableName, setEnableName] = React.useState(false);
-  const category = 'MONTLY_INCOME';
+  const category = 'MONTHLY_INCOME';
 
   React.useEffect(() => {
     if (submit) {

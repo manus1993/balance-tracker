@@ -1,6 +1,7 @@
 import axios from 'axios';
 import formatAsCurrency from '../utils/utils';
 import useSettings from '../../Hooks/useSettings';
+import { ErrorDetails } from '../Alert/Alert';
 
 const url = 'https://balance-tracker.info/api/v1/';
 export interface ItemDetail {
@@ -28,7 +29,13 @@ export function parseUsers(users: string[]) {
   return cleanedList.join(', ');
 }
 
-const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
+const useFetchData = ({
+  setAlert,
+  setErrorDetails,
+}: {
+  setAlert: (alert: boolean) => void;
+  setErrorDetails: (details: ErrorDetails | undefined) => void;
+}) => {
   const { token, account, userFilter, setIncome, setExpenses, setDebt, setGroupDetails } = useSettings();
   const fetchData = async () => {
     const FetchUrl = `${url}transactions/parsed-data?group_id=${account}${userFilter ? `&user_id=${userFilter}` : ''}`;
@@ -90,6 +97,15 @@ const useFetchData = ({ setAlert }: { setAlert: (alert: boolean) => void }) => {
       })
       .catch((error) => {
         console.error('There was an error!', error);
+
+        // Extract error details for better user messaging
+        const errorDetails: ErrorDetails = {
+          error,
+          statusCode: error.response?.status,
+          message: error.response?.data?.message || error.message,
+        };
+
+        setErrorDetails(errorDetails);
         setAlert(true);
       });
   };

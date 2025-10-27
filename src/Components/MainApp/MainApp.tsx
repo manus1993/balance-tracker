@@ -6,25 +6,41 @@ import Tabs from '../Tabs/Tabs';
 import SearchAppBar from '../TopBar/TopBar';
 import useFetchData from '../Clients/Clients';
 import useSettings from '../../Hooks/useSettings';
-import Alert from '../Alert/Alert';
+import Alert, { ErrorDetails } from '../Alert/Alert';
 
 export default function MainApp() {
   const [alert, setAlert] = useState(false);
-  const fetchData = useFetchData({ setAlert });
+  const [errorDetails, setErrorDetails] = useState<ErrorDetails | undefined>(undefined);
+  const fetchData = useFetchData({
+    setAlert,
+    setErrorDetails,
+  });
   const { reload, setReload } = useSettings();
+
+  const handleCloseAlert = () => {
+    setAlert(false);
+    setErrorDetails(undefined);
+  };
 
   useEffect(() => {
     if (alert) {
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
+      // Auto-dismiss after 5 seconds (increased from 3 for better UX)
+      const timer = setTimeout(() => {
+        handleCloseAlert();
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
+    return undefined;
+  }, [alert]);
+
+  useEffect(() => {
     if (reload) {
       fetchData();
     }
     setReload(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reload, alert]);
+  }, [reload]);
 
   return (
     <>
@@ -39,10 +55,12 @@ export default function MainApp() {
           </Container>
           <Container>
             <Tabs />
-            <Alert alert={alert} />
           </Container>
         </Box>
       </div>
+
+      {/* Alert positioned at top-right, outside main content flow */}
+      <Alert alert={alert} errorDetails={errorDetails} onClose={handleCloseAlert} />
     </>
   );
 }

@@ -2,13 +2,15 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { Grid, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import { useEffect } from 'react';
 import useSettings from '../../Hooks/useSettings';
-import { createNewBatch, createNewTransaction, downloadReceipts, downloadReport, ItemDetail } from '../Clients/Clients';
+import { createNewBatch, createNewTransaction, downloadReceipts, downloadReport } from '../Clients/Clients';
+import { createIncident, IncidentType, IncidentStatus } from '../Clients/incidentClient';
+import type { CreateIncident } from '../Clients/incidentClient';
 
 const style = {
   position: 'absolute',
@@ -456,6 +458,110 @@ export function GetReportModal({ handleClose }: { handleClose: () => void }) {
     >
       <Typography variant="h6">Get Report</Typography>
       <MonthYearSelector month={month} setMonth={setMonth} year={year} setYear={setYear} />
+      <Button variant="contained" onClick={() => setSubmit(true)}>
+        Submit
+      </Button>
+    </Box>
+  );
+}
+
+export function SetIncidentModal({ handleClose }: { handleClose: () => void }) {
+  const [submit, setSubmit] = React.useState(false);
+  const { token, account } = useSettings();
+  const [payload, setPayload] = React.useState<CreateIncident>({
+    message: '',
+    incident_type: IncidentType.OTHER,
+    incident_status: IncidentStatus.REPORTED,
+    group_id: account ?? '',
+    submitter: '',
+  });
+
+  // helper to create human readable labels from enum keys
+  const ACRONYMS = new Set(['ac', 'wifi', 'cfe', 'api']);
+  const humanize = (code: string) =>
+    code
+      .split('_')
+      .map((w) => (ACRONYMS.has(w.toLowerCase()) ? w.toUpperCase() : `${w.charAt(0).toUpperCase()}${w.slice(1)}`))
+      .join(' ');
+
+  type Option = { value: string; label: string };
+
+  const incidentTypeOptions: Option[] = Object.values(IncidentType).map((v) => ({ value: v, label: humanize(v) }));
+  const incidentStatusOptions: Option[] = Object.values(IncidentStatus).map((v) => ({ value: v, label: humanize(v) }));
+
+  const setField = <K extends keyof CreateIncident>(key: K, value: CreateIncident[K]) => {
+    setPayload((p) => ({ ...p, [key]: value }));
+  };
+
+  React.useEffect(() => {
+    if (submit) {
+      if (account == null) {
+        setSubmit(false);
+        throw new Error('No group has been selected');
+      }
+      createIncident(token, payload, account);
+      setSubmit(false);
+      handleClose();
+    }
+  }, [submit, token, account, payload, handleClose]);
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+        border: '0.5px solid',
+        boxShadow: 3,
+        padding: 2,
+        borderRadius: 3,
+        flexDirection: 'column',
+      }}
+    >
+      <Typography variant="h6">Create Incident</Typography>
+      <TextField
+        id="incident-message"
+        variant="outlined"
+        label="Message"
+        value={payload.message ?? ''}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('message', e.target.value)}
+        multiline
+        minRows={3}
+      />
+      <Autocomplete
+        disablePortal
+        id="incident-type"
+        options={incidentTypeOptions}
+        value={incidentTypeOptions.find((o) => o.value === payload.incident_type) ?? null}
+        sx={{ flex: 1 }}
+        getOptionLabel={(option) => (option ? option.label : '')}
+        isOptionEqualToValue={(option, value) => option.value === value.value}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="Type" />}
+        onChange={(event, option) =>
+          setField('incident_type', (option?.value as CreateIncident['incident_type']) ?? undefined)
+        }
+      />
+      <Autocomplete
+        disablePortal
+        id="incident-status"
+        options={incidentStatusOptions}
+        value={incidentStatusOptions.find((o) => o.value === payload.incident_status) ?? null}
+        sx={{ flex: 1 }}
+        getOptionLabel={(option) => (option ? option.label : '')}
+        isOptionEqualToValue={(option, value) => option.value === value.value}
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        renderInput={(params) => <TextField {...params} label="Status" />}
+        onChange={(event, option) =>
+          setField('incident_status', (option?.value as CreateIncident['incident_status']) ?? undefined)
+        }
+      />
+      <TextField
+        id="incident-submitter"
+        variant="outlined"
+        label="Submitter"
+        value={payload.submitter}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('submitter', e.target.value)}
+        sx={{ flex: 1 }}
+      />
       <Button variant="contained" onClick={() => setSubmit(true)}>
         Submit
       </Button>

@@ -38,7 +38,10 @@ const useFetchData = ({
 }) => {
   const { token, account, userFilter, setIncome, setExpenses, setDebt, setGroupDetails } = useSettings();
   const fetchData = async () => {
-    const FetchUrl = `${url}transactions/parsed-data?group_id=${account}${userFilter ? `&user_id=${userFilter}` : ''}`;
+    const accountId: string = account ?? '';
+    const FetchUrl = `${url}transactions/${encodeURIComponent(accountId)}${
+      userFilter ? `?user_id=${encodeURIComponent(userFilter)}` : ''
+    }`;
     axios
       .get(FetchUrl, {
         headers: {

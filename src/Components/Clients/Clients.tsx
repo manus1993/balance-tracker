@@ -211,6 +211,8 @@ export function createNewTransaction(
   name: string,
   movement_type: string,
 ) {
+  const normalizedMonth = (monthsMapping[month] ?? month).padStart(2, '0');
+  const date = `${year}-${normalizedMonth}-01T00:00:00`;
   const SubmitUrl = `${url}transactions/create-new-transaction`;
   axios
     .post(
@@ -218,8 +220,7 @@ export function createNewTransaction(
       {
         group_id: account,
         user_id: user,
-        month: monthsMapping[month],
-        year,
+        date,
         amount,
         category,
         comments,

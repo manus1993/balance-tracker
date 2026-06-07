@@ -172,14 +172,15 @@ export function createNewBatch(
   comments: string,
   category: string,
 ) {
+  const normalizedMonth = (monthsMapping[month] ?? month).padStart(2, '0');
+  const date = `${year}-${normalizedMonth}-01T00:00:00`;
   const SubmitUrl = `${url}transactions/create-receipt-batch`;
   axios
     .post(
       SubmitUrl,
       {
         group_id: account,
-        month: monthsMapping[month],
-        year,
+        date,
         amount,
         category,
         comments,

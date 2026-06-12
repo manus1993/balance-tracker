@@ -7,6 +7,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Grid, Typography } from '@mui/material';
 import GeneralsTable from './GeneralTab';
 import MovementsTab from './MovementsTab';
+import IncidentTab from './IncidentTab';
 import { MongoChart } from './MongoTab';
 import BasicModal from './Modal';
 import useSettings from '../../Hooks/useSettings';
@@ -34,7 +35,8 @@ export default function Tabs() {
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="General" value="1" />
             <Tab label="Movements" value="2" />
-            <Tab label="Details" value="3" />
+            <Tab label="Incidents" value="3" />
+            <Tab label="Details" value="4" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -66,6 +68,9 @@ export default function Tabs() {
           </Box>
         </TabPanel>
         <TabPanel value="3">
+          <IncidentTab />
+        </TabPanel>
+        <TabPanel value="4">
           <MongoChart />
         </TabPanel>
       </TabContext>
